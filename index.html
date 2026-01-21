@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>NewsGrid CMS</title>
@@ -11,12 +11,18 @@
       justify-content: center;
       padding-top: 60px;
     }
-    .card {
+    .container {
+      max-width: 400px;
+      width: 100%;
       background: #fff;
       padding: 25px;
-      width: 350px;
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #111;
     }
     input, select, button {
       width: 100%;
@@ -24,6 +30,7 @@
       margin-bottom: 12px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 1rem;
     }
     button {
       background: #111;
@@ -31,27 +38,28 @@
       border: none;
       cursor: pointer;
       font-weight: bold;
+      transition: 0.3s;
     }
-    button:hover { opacity: 0.9; }
-    #status { text-align: center; margin-top: 10px; font-weight: bold; }
+    button:hover {
+      opacity: 0.9;
+    }
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-<div class="card">
-  <h2>NewsGrid CMS</h2>
+<div class="container">
+  <h1>NewsGrid CMS</h1>
+  <form id="cmsForm">
+    <input id="userId" name="userId" placeholder="User ID" required>
+    <input id="password" type="password" name="password" placeholder="Password" required>
+    <input id="imageUrl" name="imageUrl" placeholder="Image URL" required>
 
-  <!-- Form -->
-  <form 
-    action="YOUR_WEB_APP_URL_HERE" 
-    method="POST" 
-    target="hiddenFrame">
-
-    <input name="userId" placeholder="User ID" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <input name="imageUrl" placeholder="Image URL" required>
-
-    <select name="category" required>
+    <select id="category" name="category" required>
       <option value="">Select Category</option>
       <option value="Politics">Politics</option>
       <option value="Business">Business</option>
@@ -62,22 +70,45 @@
     <button type="submit">Upload</button>
   </form>
 
-  <div id="status">Enter details and click Upload</div>
-
-  <!-- Hidden iframe to prevent page reload -->
-  <iframe name="hiddenFrame" style="display:none;"></iframe>
+  <div id="status"></div>
 </div>
 
 <script>
-  // Optional: display simple status message after submission
-  const form = document.querySelector("form");
-  const status = document.getElementById("status");
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVmvmO0djPR5GWlyNR_DyvVmdTdbbS8dO8y0GQgI6ziF2QJlF6CLABUpLg7K9ZA9vsBw/exec";
 
-  form.addEventListener("submit", () => {
+  document.getElementById("cmsForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      userId: document.getElementById("userId").value,
+      password: document.getElementById("password").value,
+      imageUrl: document.getElementById("imageUrl").value,
+      category: document.getElementById("category").value
+    };
+
+    const status = document.getElementById("status");
     status.innerText = "Uploading...";
-    setTimeout(() => {
-      status.innerText = "✅ Upload attempted (check sheet)";
-    }, 1000);
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        status.innerText = "✅ Uploaded successfully!";
+        document.getElementById("cmsForm").reset();
+      } else {
+        status.innerText = "❌ " + result.message;
+      }
+
+    } catch (err) {
+      status.innerText = "❌ Network error, try again.";
+      console.error(err);
+    }
   });
 </script>
 
