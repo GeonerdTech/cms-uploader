@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>NewsGrid CMS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding-top: 60px;
+    }
+    .card {
+      background: #fff;
+      padding: 25px;
+      width: 350px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #111;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.9; }
+    #status { text-align: center; margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>NewsGrid CMS</h2>
+
+  <!-- Form -->
+  <form 
+    action="YOUR_WEB_APP_URL_HERE" 
+    method="POST" 
+    target="hiddenFrame">
+
+    <input name="userId" placeholder="User ID" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <input name="imageUrl" placeholder="Image URL" required>
+
+    <select name="category" required>
+      <option value="">Select Category</option>
+      <option value="Politics">Politics</option>
+      <option value="Business">Business</option>
+      <option value="World">World</option>
+      <option value="Opinion">Opinion</option>
+    </select>
+
+    <button type="submit">Upload</button>
+  </form>
+
+  <div id="status">Enter details and click Upload</div>
+
+  <!-- Hidden iframe to prevent page reload -->
+  <iframe name="hiddenFrame" style="display:none;"></iframe>
+</div>
+
+<script>
+  // Optional: display simple status message after submission
+  const form = document.querySelector("form");
+  const status = document.getElementById("status");
+
+  form.addEventListener("submit", () => {
+    status.innerText = "Uploading...";
+    setTimeout(() => {
+      status.innerText = "✅ Upload attempted (check sheet)";
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
