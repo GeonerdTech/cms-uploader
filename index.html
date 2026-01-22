@@ -1,98 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NewsGrid CMS</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 350px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #111;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-    button {
-      background: #111;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-    button:hover {
-      background: #222;
-    }
-    #status {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>NewsGrid CMS</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    padding-top: 60px;
+  }
+  .card {
+    background: #fff;
+    padding: 25px;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  button {
+    background: #111;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  #status {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h2>NewsGrid CMS</h2>
+<div class="card">
+  <h3>NewsGrid CMS</h3>
 
-    <form 
-      id="cmsForm"
-      action="https://script.google.com/macros/s/AKfycbybmQnBK_kNR_IvguBNjvDzSXIUcvVnTwet1IpcoK9ejh4Hm0mMiBPZKaDYrXooNqwS4g/exec" 
-      method="POST" 
-      target="hiddenFrame">
+  <form
+    id="cmsForm"
+    action="https://script.google.com/macros/s/AKfycbzZ1kG3qnpAGlnoVwnFiwuZlzSuihxXn8h4RWDi5l2sd_ukCk9miYuFH7YAJtKOAByibQ/exec"
+    method="POST"
+    target="hiddenFrame">
 
-      <input type="text" name="userId" placeholder="User ID" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <input type="text" name="imageUrl" placeholder="Image URL" required>
+    <input name="userId" placeholder="User ID" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <input name="imageUrl" placeholder="Image URL" required>
 
-      <select name="category" required>
-        <option value="">Select Category</option>
-        <option value="Politics">Politics</option>
-        <option value="Business">Business</option>
-        <option value="World">World</option>
-        <option value="Opinion">Opinion</option>
-      </select>
+    <select name="category" required>
+      <option value="">Select Category</option>
+      <option value="Politics">Politics</option>
+      <option value="Business">Business</option>
+      <option value="World">World</option>
+      <option value="Opinion">Opinion</option>
+    </select>
 
-      <button type="submit">Upload</button>
-    </form>
+    <button type="submit">Upload</button>
+  </form>
 
-    <div id="status"></div>
-    <iframe name="hiddenFrame" style="display:none;"></iframe>
-  </div>
+  <div id="status"></div>
 
-  <script>
-    const form = document.getElementById('cmsForm');
-    const status = document.getElementById('status');
+  <iframe name="hiddenFrame" style="display:none;"></iframe>
+</div>
 
-    form.addEventListener('submit', (e) => {
-      status.innerText = "Uploading...";
-      setTimeout(() => {
-        // Simple feedback because iframe submit won't return JSON
-        status.innerText = "✅ If credentials correct, upload successful!";
+<script>
+  const form = document.getElementById("cmsForm");
+  const status = document.getElementById("status");
+  const iframe = document.querySelector("iframe");
+
+  form.addEventListener("submit", () => {
+    status.innerText = "Uploading...";
+  });
+
+  iframe.addEventListener("load", () => {
+    try {
+      const text = iframe.contentDocument.body.innerText;
+
+      if (text.includes("Success")) {
+        status.innerText = "✅ Uploaded successfully";
         form.reset();
-      }, 1500);
-    });
-  </script>
+      } else if (text.includes("Unauthorized")) {
+        status.innerText = "❌ Invalid User ID or Password";
+      } else {
+        status.innerText = "❌ Error: " + text;
+      }
+    } catch {
+      status.innerText = "❌ Something went wrong";
+    }
+  });
+</script>
 
 </body>
 </html>
